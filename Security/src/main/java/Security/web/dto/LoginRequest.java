@@ -1,4 +1,4 @@
-package Security.web.a;
+package Security.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,30 +1,26 @@
 package Security.web.Controller;
 
+import Security.config.AppProperties;
 import Security.db.model.EnumsType.AuthProvider;
 import Security.db.model.UserEntity;
 import Security.db.repository.UserRepository;
 import Security.exceptions.BadRequestException;
 import Security.security.TokenProvider;
-import Security.web.a.ApiResponse;
-import Security.web.a.AuthResponse;
-import Security.web.a.LoginRequest;
-import Security.web.a.SignUpRequest;
+import Security.service.CacheService;
+import Security.web.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
-
 
 @RestController
 @RequestMapping("/auth")
@@ -41,6 +37,11 @@ public class AuthController {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    private CacheService cacheService;
+    @Autowired
+    AppProperties appProperties;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -80,4 +81,15 @@ public class AuthController {
                 .body(new ApiResponse(true, "User registered successfully@"));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity logoutUSer(HttpServletRequest request) {
+        cacheService.logOutUSerFromCache(appProperties.getJwtFromRequest(request));
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/data")
+    public UserDataForAnotherApp getUserFromTokenFromAnotherApp(HttpServletRequest request) {
+
+        return cacheService.getUserFromToken(appProperties.getJwtFromRequest(request));
+    }
 }

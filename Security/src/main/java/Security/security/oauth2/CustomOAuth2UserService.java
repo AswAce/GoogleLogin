@@ -1,5 +1,6 @@
 package Security.security.oauth2;
 
+import Security.cache.CacheManagement;
 import Security.db.model.EnumsType.AuthProvider;
 import Security.db.model.EnumsType.RoleTypes;
 import Security.db.model.RoleEntity;
@@ -11,6 +12,7 @@ import Security.security.UserPrincipal;
 import Security.security.oauth2.user.OAuth2UserInfo;
 import Security.security.oauth2.user.OAuth2UserInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -28,11 +30,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    CacheManagement cacheManagement;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
 
+        OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
         try {
             return processOAuth2User(oAuth2UserRequest, oAuth2User);
         } catch (AuthenticationException ex) {
@@ -62,7 +66,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }
-
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
@@ -81,5 +84,4 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         existingUser.setName(oAuth2UserInfo.getName());
         return userRepository.save(existingUser);
     }
-
 }

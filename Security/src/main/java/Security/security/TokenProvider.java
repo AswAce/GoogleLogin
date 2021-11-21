@@ -1,22 +1,26 @@
 package Security.security;
 
+import Security.cache.CacheManagement;
 import Security.config.AppProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
 import java.security.Key;
 import java.time.*;
 import java.util.Date;
 
 @Service
 public class TokenProvider {
-
+    @Autowired
+    private CacheManagement cacheManagement;
     private static final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
-
+    @Autowired
     private AppProperties appProperties;
 
     public TokenProvider(AppProperties appProperties) {
@@ -27,13 +31,14 @@ public class TokenProvider {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Date expiryDate = makeDateInture(appProperties.getAuth().getTokenExpirationMsec());
-
-       return Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(Long.toString(userPrincipal.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(getKey(appProperties.getAuth().getTokenSecret()), SignatureAlgorithm.HS512)
                 .compact();
+        cacheManagement.putElement(token, expiryDate, userPrincipal);
+        return token;
     }
 
     public Long getUserIdFromToken(String token) {

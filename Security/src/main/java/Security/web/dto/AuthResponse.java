@@ -1,4 +1,4 @@
-package Security.web.a;
+package Security.web.dto;
 
 public class AuthResponse {
     private String accessToken;
@@ -7,6 +7,4 @@ public class AuthResponse {
     public AuthResponse(String accessToken) {
         this.accessToken = accessToken;
     }
-
-    // Getters and Setters (Omitted for brevity)
 }

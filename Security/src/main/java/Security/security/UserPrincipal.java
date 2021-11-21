@@ -1,14 +1,11 @@
 package Security.security;
 
-
 import Security.db.model.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
 import java.util.*;
-import java.util.stream.Stream;
 
 public class UserPrincipal implements OAuth2User, UserDetails {
     private Long id;
@@ -29,7 +26,6 @@ public class UserPrincipal implements OAuth2User, UserDetails {
                 map(roleEntity -> new SimpleGrantedAuthority
                         ("ROLE_" + roleEntity.getRole().name())).toList();
         List<GrantedAuthority> authorities = new ArrayList<>(roles);
-        System.out.println();
 
         return new UserPrincipal(
                 user.getId(),

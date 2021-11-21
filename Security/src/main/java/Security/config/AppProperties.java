@@ -1,7 +1,12 @@
 package Security.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.StringUtils;
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @ConfigurationProperties(prefix = "app")
@@ -16,6 +21,7 @@ public class AppProperties {
         public String getTokenSecret() {
             return tokenSecret;
         }
+
         public void setTokenSecret(String tokenSecret) {
             this.tokenSecret = tokenSecret;
         }
@@ -48,5 +54,19 @@ public class AppProperties {
 
     public OAuth2 getOauth2() {
         return oauth2;
+    }
+
+    public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
+
+    public String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7, bearerToken.length());
+        }
+        return null;
     }
 }

@@ -2,7 +2,6 @@ package Security.security.oauth2.user;
 
 import Security.db.model.EnumsType.AuthProvider;
 import Security.exceptions.OAuth2AuthenticationProcessingException;
-
 import java.util.Map;
 
 public class OAuth2UserInfoFactory {

@@ -1,12 +1,10 @@
 package Security.db.model;
 
 import Security.db.model.EnumsType.AuthProvider;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -43,7 +41,7 @@ public class UserEntity {
 
     private String providerId;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany( fetch = FetchType.EAGER)
     private List<RoleEntity> roles = new ArrayList<>();
 
 }

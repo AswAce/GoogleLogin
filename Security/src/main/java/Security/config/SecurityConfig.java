@@ -2,6 +2,7 @@ package Security.config;
 
 import Security.security.CustomUserDetailsService;
 import Security.security.RestAuthenticationEntryPoint;
+import Security.security.filters.CacheLoggedInAuthenticationFilter;
 import Security.security.filters.TokenAuthenticationFilter;
 import Security.security.oauth2.CustomOAuth2UserService;
 import Security.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -45,6 +46,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+
+
+    @Bean
+    public CacheLoggedInAuthenticationFilter cacheLoggedInAuthenticaitonFIlter() {
+        return new CacheLoggedInAuthenticationFilter();
+    }
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -130,5 +137,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Add our custom Token based authentication filter
         http.addFilterBefore(tokenAuthenticationFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(cacheLoggedInAuthenticaitonFIlter(), TokenAuthenticationFilter.class);
     }
 }

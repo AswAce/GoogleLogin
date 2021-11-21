@@ -5,7 +5,6 @@ import Security.db.model.RoleEntity;
 import Security.db.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -2,7 +2,6 @@ package Security.db.model;
 
 import Security.db.model.EnumsType.RoleTypes;
 import lombok.*;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
